@@ -2,6 +2,7 @@ package com.fullcycle.admin.catalogo.application.category.create;
 
 import com.fullcycle.admin.catalogo.domain.category.CategoryGateway;
 import com.fullcycle.admin.catalogo.domain.exceptions.DomainException;
+import com.fullcycle.admin.catalogo.domain.validation.handler.Notification;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -44,7 +45,7 @@ class CreateCategoryUseCaseTest {
         Mockito.when(categoryGateway.create(any()))
                 .thenAnswer(returnsFirstArg());
 
-        final var actualOutput = useCase.execute(aCommand);
+        final var actualOutput = useCase.execute(aCommand).get();
 
         Assertions.assertNotNull(actualOutput);
         Assertions.assertNotNull(actualOutput.id());
@@ -74,10 +75,10 @@ class CreateCategoryUseCaseTest {
                 expectedIsActive
         );
 
-        final var actualException =
-                assertThrows(DomainException.class, () -> useCase.execute(aCommand));
+        final var notification = useCase.execute(aCommand).getLeft();
 
-        assertEquals(expectedErrorMessage, actualException.getMessage());
+        assertEquals(expectedErrorCount, notification.getErrors().size());
+        assertEquals(expectedErrorMessage, notification.firstError().message());
 
         Mockito.verify(categoryGateway, times(0)).create(any());
     }
@@ -97,7 +98,7 @@ class CreateCategoryUseCaseTest {
         Mockito.when(categoryGateway.create(any()))
                 .thenAnswer(returnsFirstArg());
 
-        final var actualOutput = useCase.execute(aCommand);
+        final var actualOutput = useCase.execute(aCommand).get();
 
         Assertions.assertNotNull(actualOutput);
         Assertions.assertNotNull(actualOutput.id());
@@ -119,6 +120,7 @@ class CreateCategoryUseCaseTest {
         final var expectedDescription = "A categoria mais assistida";
         final var expectedIsActive = false;
         final var expectedErrorMessage = "Gateway error";
+        final var expectedErrorCount = 1;
 
         final var aCommand = CreateCategoryCommand.with(
                 expectedName,
@@ -129,10 +131,10 @@ class CreateCategoryUseCaseTest {
         Mockito.when(categoryGateway.create(any()))
                 .thenThrow(new IllegalStateException(expectedErrorMessage));
 
-        final var actualException =
-                assertThrows(IllegalStateException.class, () -> useCase.execute(aCommand));
+        final var notification = useCase.execute(aCommand).getLeft();
 
-        assertEquals(expectedErrorMessage, actualException.getMessage());
+        assertEquals(expectedErrorCount, notification.getErrors().size());
+        assertEquals(expectedErrorMessage, notification.firstError().message());
 
         Mockito.verify(categoryGateway, times(1)).create(argThat(aCategory ->
                 Objects.equals(expectedName, aCategory.getName())
