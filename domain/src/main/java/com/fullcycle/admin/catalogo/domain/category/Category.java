@@ -74,6 +74,23 @@ public class Category extends AggregateRoot<CategoryID> {
         return this;
     }
 
+    public Category update(
+            final String aName,
+            final String aDescription,
+            final boolean isActive
+    ) {
+        this.name = aName;
+        this.description = aDescription;
+
+        if(isActive) {
+            activate();
+        } else {
+            deactivate();
+        }
+
+        return this;
+    }
+
     @Override
     public CategoryID getId() {
         return id;
