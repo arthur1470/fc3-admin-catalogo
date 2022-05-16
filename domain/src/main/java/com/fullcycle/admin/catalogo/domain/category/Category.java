@@ -51,6 +51,7 @@ public class Category extends AggregateRoot<CategoryID> {
                 deletedAt
         );
     }
+
     public static Category with(final Category aCategory) {
         return new Category(
                 aCategory.getId(),
