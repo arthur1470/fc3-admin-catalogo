@@ -14,6 +14,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 @ExtendWith(MockitoExtension.class)
 public class ListCategoriesUseCaseTest {
 
@@ -66,18 +69,76 @@ public class ListCategoriesUseCaseTest {
 
         assertEquals(expectedItemsCount, actualResult.items().size());
         assertEquals(expectedResult, actualResult);
-        assertEquals(expectedPage, actualResult.page());
+        assertEquals(expectedPage, actualResult.currentPage());
         assertEquals(expectedPerPage, actualResult.perPage());
         assertEquals(categories.size(), actualResult.total());
     }
 
     @Test
     void givenAValidQuery_whenHasNoResults_thenShouldReturnEmptyCategories() {
+        final var categories = List.<Category>of();
 
+        final var expectedPage = 0;
+        final var expectedPerPage = 10;
+        final var expectedTerms = "";
+        final var expectedSort = "createdAt";
+        final var expectedDirection = "asc";
+
+        final var aQuery = new CategorySearchQuery(
+                expectedPage,
+                expectedPerPage,
+                expectedTerms,
+                expectedSort,
+                expectedDirection
+        );
+
+        final var expectedPagination = new Pagination<>(
+                expectedPage,
+                expectedPerPage,
+                categories.size(),
+                categories
+        );
+
+        final var expectedItemsCount = 0;
+        final var expectedResult = expectedPagination.map(CategoryListOutput::from);
+
+        Mockito.when(categoryGateway.findAll(aQuery))
+                .thenReturn(expectedPagination);
+
+        final var actualResult = useCase.execute(aQuery);
+
+        assertEquals(expectedItemsCount, actualResult.items().size());
+        assertEquals(expectedResult, actualResult);
+        assertEquals(expectedPage, actualResult.currentPage());
+        assertEquals(expectedPerPage, actualResult.perPage());
+        assertEquals(categories.size(), actualResult.total());
     }
 
     @Test
     void givenAValidQuery_whenGatewayThrowsException_shouldReturnException() {
+        final var expectedPage = 0;
+        final var expectedPerPage = 10;
+        final var expectedTerms = "";
+        final var expectedSort = "createdAt";
+        final var expectedDirection = "asc";
+        final var expectedErrorMessage = "Gateway error";
 
+        final var aQuery = new CategorySearchQuery(
+                expectedPage,
+                expectedPerPage,
+                expectedTerms,
+                expectedSort,
+                expectedDirection
+        );
+
+        Mockito.when(categoryGateway.findAll(aQuery))
+                .thenThrow(new IllegalStateException(expectedErrorMessage));
+
+        final var actualException = assertThrows(
+                IllegalStateException.class,
+                () -> useCase.execute(aQuery)
+        );
+
+        assertEquals(expectedErrorMessage, actualException.getMessage());
     }
 }
