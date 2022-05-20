@@ -1,7 +1,8 @@
 package com.fullcycle.admin.catalogo.domain.exceptions;
 
-import java.util.List;
 import com.fullcycle.admin.catalogo.domain.validation.Error;
+
+import java.util.List;
 
 public class DomainException extends NoStacktraceException {
 
