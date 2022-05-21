@@ -218,7 +218,7 @@ class CategoryMySQLGatewayTest {
         assertEquals(expectedPage, actualResult.currentPage());
         assertEquals(expectedPerPage, actualResult.perPage());
         assertEquals(expectedTotal, actualResult.total());
-        assertEquals(expectedPerPage, actualResult.items().size());
+        assertEquals(0, actualResult.items().size());
     }
 
     @Test
@@ -322,6 +322,6 @@ class CategoryMySQLGatewayTest {
         assertEquals(expectedPerPage, actualResult.perPage());
         assertEquals(expectedTotal, actualResult.total());
         assertEquals(expectedPerPage, actualResult.items().size());
-        assertEquals(documentarios.getId(), actualResult.items().get(0).getId());
+        assertEquals(filmes.getId().getValue(), actualResult.items().get(0).getId().getValue());
     }
 }
