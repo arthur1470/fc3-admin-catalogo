@@ -52,8 +52,28 @@ public class Category extends AggregateRoot<CategoryID> {
         );
     }
 
-    public static Category with(final Category aCategory) {
+    public static Category with(
+            final CategoryID anId,
+            final String name,
+            final String description,
+            final boolean active,
+            final Instant createdAt,
+            final Instant updatedAt,
+            final Instant deletedAt
+    ) {
         return new Category(
+                anId,
+                name,
+                description,
+                active,
+                createdAt,
+                updatedAt,
+                deletedAt
+        );
+    }
+
+    public static Category with(final Category aCategory) {
+        return with(
                 aCategory.getId(),
                 aCategory.getName(),
                 aCategory.getDescription(),
@@ -94,7 +114,7 @@ public class Category extends AggregateRoot<CategoryID> {
         this.name = aName;
         this.description = aDescription;
 
-        if(isActive) {
+        if (isActive) {
             activate();
         } else {
             deactivate();
