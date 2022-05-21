@@ -15,4 +15,4 @@ services:
       - adm_videos_network
 
 networks:
-  adm_videos_network
+  adm_videos_network:
