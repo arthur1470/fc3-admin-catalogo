@@ -48,7 +48,7 @@ class GetCategoryByIdUseCaseTest {
 
         final var actualCategory = useCase.execute(expectedId.getValue());
 
-        assertEquals(CategoryOutput.from(aCategory), actualCategory);
+        assertEquals(expectedId, actualCategory.id());
         assertEquals(expectedName, actualCategory.name());
         assertEquals(expectedDescription, actualCategory.description());
         assertEquals(expectedIsActive, actualCategory.isActive());
