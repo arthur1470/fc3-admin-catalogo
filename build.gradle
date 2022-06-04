@@ -4,9 +4,10 @@ plugins {
     id 'java'
 }
 
+targetCompatibility = JavaVersion.VERSION_16
 group = 'com.fullcycle.admin.catalogo'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '17'
+sourceCompatibility = "16"
 
 repositories {
     mavenCentral()
