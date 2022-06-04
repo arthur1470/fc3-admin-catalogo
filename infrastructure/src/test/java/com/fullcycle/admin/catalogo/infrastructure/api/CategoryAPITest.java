@@ -6,6 +6,8 @@ import com.fullcycle.admin.catalogo.application.category.create.CreateCategoryOu
 import com.fullcycle.admin.catalogo.application.category.create.CreateCategoryUseCase;
 import com.fullcycle.admin.catalogo.application.category.retrieve.get.CategoryOutput;
 import com.fullcycle.admin.catalogo.application.category.retrieve.get.GetCategoryByIdUseCase;
+import com.fullcycle.admin.catalogo.application.category.update.UpdateCategoryOutput;
+import com.fullcycle.admin.catalogo.application.category.update.UpdateCategoryUseCase;
 import com.fullcycle.admin.catalogo.domain.category.Category;
 import com.fullcycle.admin.catalogo.domain.category.CategoryID;
 import com.fullcycle.admin.catalogo.domain.exceptions.DomainException;
@@ -13,6 +15,7 @@ import com.fullcycle.admin.catalogo.domain.exceptions.NotFoundException;
 import com.fullcycle.admin.catalogo.domain.validation.Error;
 import com.fullcycle.admin.catalogo.domain.validation.handler.Notification;
 import com.fullcycle.admin.catalogo.infrastructure.category.models.CreateCategoryApiInput;
+import com.fullcycle.admin.catalogo.infrastructure.category.models.UpdateCategoryApiInput;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -52,6 +55,9 @@ class CategoryAPITest {
     @MockBean
     private GetCategoryByIdUseCase getCategoryByIdUseCase;
 
+    @MockBean
+    private UpdateCategoryUseCase updateCategoryUseCase;
+
     @Test
     void givenAValidCommand_whenCallsCreateCategory_shouldReturnCategoryId() throws Exception {
         // given
@@ -59,7 +65,7 @@ class CategoryAPITest {
         final var expectedDescription = "A categoria mais assistida";
         final var expectedIsActive = true;
 
-        final var aInput =
+        final var anInput =
                 new CreateCategoryApiInput(expectedName, expectedDescription, expectedIsActive);
 
         when(createCategoryUseCase.execute(any()))
@@ -68,7 +74,7 @@ class CategoryAPITest {
         // when
         final var request = MockMvcRequestBuilders.post("/categories")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(this.mapper.writeValueAsString(aInput));
+                .content(this.mapper.writeValueAsString(anInput));
 
         final var response = this.mvc.perform(request)
                 .andDo(MockMvcResultHandlers.print());
@@ -95,7 +101,7 @@ class CategoryAPITest {
         final var expectedIsActive = true;
         final var expectedMessage = "'name' should not be null";
 
-        final var aInput =
+        final var anInput =
                 new CreateCategoryApiInput(expectedName, expectedDescription, expectedIsActive);
 
         when(createCategoryUseCase.execute(any()))
@@ -104,7 +110,7 @@ class CategoryAPITest {
         // when
         final var request = MockMvcRequestBuilders.post("/categories")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(this.mapper.writeValueAsString(aInput));
+                .content(this.mapper.writeValueAsString(anInput));
 
         final var response = this.mvc.perform(request)
                 .andDo(MockMvcResultHandlers.print());
@@ -222,5 +228,42 @@ class CategoryAPITest {
                 status().isNotFound(),
                 jsonPath("$.message", equalTo(expectedErrorMessage))
         );
+    }
+
+    @Test
+    void givenAValidCommand_whenCallsUpdateCategory_shouldReturnCategoryId() throws Exception {
+        // given
+        final var expectedId = "123";
+        final var expectedName = "Filmes";
+        final var expectedDescription = "A categoria mais assistida";
+        final var expectedIsActive = true;
+
+        when(updateCategoryUseCase.execute(any()))
+                .thenReturn(Right(UpdateCategoryOutput.from(expectedId)));
+
+        final var aCommand = new UpdateCategoryApiInput(
+                expectedName,
+                expectedDescription,
+                expectedIsActive
+        );
+
+        // when
+        final var request = MockMvcRequestBuilders.put("/categories/{id}", expectedId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(this.mapper.writeValueAsString(aCommand));
+
+        final var response = this.mvc.perform(request)
+                .andDo(MockMvcResultHandlers.print());
+        // then
+        response.andExpectAll(
+                MockMvcResultMatchers.status().isNoContent(),
+                header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+        );
+
+        Mockito.verify(updateCategoryUseCase, times(1)).execute(argThat(cmd ->
+                Objects.equals(expectedName, cmd.name())
+                && Objects.equals(expectedDescription, cmd.description())
+                && Objects.equals(expectedIsActive, cmd.isActive())
+        ));
     }
 }
