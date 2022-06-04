@@ -256,8 +256,91 @@ class CategoryAPITest {
                 .andDo(MockMvcResultHandlers.print());
         // then
         response.andExpectAll(
-                MockMvcResultMatchers.status().isNoContent(),
-                header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                MockMvcResultMatchers.status().isOk(),
+                header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE),
+                jsonPath("$.id", equalTo(expectedId))
+        );
+
+        Mockito.verify(updateCategoryUseCase, times(1)).execute(argThat(cmd ->
+                Objects.equals(expectedName, cmd.name())
+                && Objects.equals(expectedDescription, cmd.description())
+                && Objects.equals(expectedIsActive, cmd.isActive())
+        ));
+    }
+
+    @Test
+    void givenAInvalidId_whenCallsUpdateCategory_thenShouldReturnNotFound() throws Exception {
+        // given
+        final var expectedId = "not-found";
+        final var expectedName = "Filmes";
+        final var expectedDescription = "A categoria mais assistida";
+        final var expectedIsActive = true;
+
+        final var expectedErrorMessage = "Category with ID %s was not found".formatted(expectedId);
+
+        when(updateCategoryUseCase.execute(any()))
+                .thenThrow(NotFoundException.with(Category.class, CategoryID.from(expectedId)));
+
+        final var aCommand = new UpdateCategoryApiInput(
+                expectedName,
+                expectedDescription,
+                expectedIsActive
+        );
+
+        // when
+        final var request = MockMvcRequestBuilders.put("/categories/{id}", expectedId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(this.mapper.writeValueAsString(aCommand));
+
+        final var response = this.mvc.perform(request)
+                .andDo(MockMvcResultHandlers.print());
+        // then
+        response.andExpectAll(
+                MockMvcResultMatchers.status().isNotFound(),
+                header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE),
+                jsonPath("$.message", equalTo(expectedErrorMessage))
+        );
+
+        Mockito.verify(updateCategoryUseCase, times(1)).execute(argThat(cmd ->
+                Objects.equals(expectedName, cmd.name())
+                && Objects.equals(expectedDescription, cmd.description())
+                && Objects.equals(expectedIsActive, cmd.isActive())
+        ));
+    }
+
+    @Test
+    void givenAInvalidName_whenCallsUpdateCategory_thenShouldReturnDomainException() throws Exception {
+        // given
+        final var expectedId = "not-found";
+        final var expectedName = "Filmes";
+        final var expectedDescription = "A categoria mais assistida";
+        final var expectedIsActive = true;
+
+        final var expectedErrorMessage = "'name' should not be null";
+        final var expectedErrorCount = 1;
+
+        when(updateCategoryUseCase.execute(any()))
+                .thenReturn(Left(Notification.create(new Error(expectedErrorMessage))));
+
+        final var aCommand = new UpdateCategoryApiInput(
+                expectedName,
+                expectedDescription,
+                expectedIsActive
+        );
+
+        // when
+        final var request = MockMvcRequestBuilders.put("/categories/{id}", expectedId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(this.mapper.writeValueAsString(aCommand));
+
+        final var response = this.mvc.perform(request)
+                .andDo(MockMvcResultHandlers.print());
+        // then
+        response.andExpectAll(
+                MockMvcResultMatchers.status().isUnprocessableEntity(),
+                header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE),
+                jsonPath("$.errors", hasSize(expectedErrorCount)),
+                jsonPath("$.errors[0].message", equalTo(expectedErrorMessage))
         );
 
         Mockito.verify(updateCategoryUseCase, times(1)).execute(argThat(cmd ->
