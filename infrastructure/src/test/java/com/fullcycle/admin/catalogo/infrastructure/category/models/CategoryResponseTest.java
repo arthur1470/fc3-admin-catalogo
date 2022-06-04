@@ -4,7 +4,6 @@ import com.fullcycle.admin.catalogo.JacksonTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.json.JacksonTester;
-import org.springframework.boot.test.json.JsonContent;
 
 import java.io.IOException;
 import java.time.Instant;
@@ -12,7 +11,7 @@ import java.time.Instant;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @JacksonTest
-public class CategoryResponseTest {
+class CategoryResponseTest {
 
     @Autowired
     private JacksonTester<CategoryResponse> json;
