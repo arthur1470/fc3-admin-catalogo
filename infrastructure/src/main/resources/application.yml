@@ -8,6 +8,8 @@ server:
     threads:
       worker: 64 # Generally this should be reasonably high, at least 10 per CPU core
       io: 4 # One IO thread per CPU core is a reasonable default
+  servlet:
+    context-path: /api
 
 spring:
   datasource:
