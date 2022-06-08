@@ -34,6 +34,7 @@ class UpdateCategoryUseCaseTest {
 
     @BeforeEach
     void cleanUp() {
+        Mockito.clearAllCaches();
         Mockito.reset(categoryGateway);
     }
 

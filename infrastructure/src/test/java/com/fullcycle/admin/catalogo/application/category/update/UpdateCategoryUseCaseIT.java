@@ -170,7 +170,7 @@ class UpdateCategoryUseCaseIT {
         assertEquals(aCategory.isActive(), actualCategory.isActive());
         assertEquals(aCategory.getCreatedAt(), actualCategory.getCreatedAt());
         assertEquals(aCategory.getUpdatedAt(), actualCategory.getCreatedAt());
-        assertEquals(aCategory.getDeletedAt(), actualCategory.getCreatedAt());
+        assertEquals(aCategory.getDeletedAt(), actualCategory.getDeletedAt());
     }
 
     @Test

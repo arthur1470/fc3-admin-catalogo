@@ -24,16 +24,23 @@ class ListCategoryUseCaseIT {
     private CategoryRepository categoryRepository;
 
     @BeforeEach
-    void mockUp() {
-        Stream.of(
-                Category.newCategory("Filmes", null, true),
-                Category.newCategory("Netflix Originals", "titulos de autoria da netflix", true),
-                Category.newCategory("Amazon Originals", "titulos de autoria da amazon prime", true),
-                Category.newCategory("Documentários", null, true),
-                Category.newCategory("Sports", null, true),
-                Category.newCategory("Kids", "Categoria para crianças.", true),
-                Category.newCategory("Series", null, true)
-        )
+    void mockUp() throws InterruptedException {
+        final var filmes = Category.newCategory("Filmes", null, true);
+        Thread.sleep(1);
+        final var netflix = Category.newCategory("Netflix Originals", "titulos de autoria da netflix", true);
+        Thread.sleep(1);
+        final var amazon = Category.newCategory("Amazon Originals", "titulos de autoria da amazon prime", true);
+        Thread.sleep(1);
+        final var documentarios = Category.newCategory("Documentários", null, true);
+        Thread.sleep(1);
+        final var sports = Category.newCategory("Sports", null, true);
+        Thread.sleep(1);
+        final var kids = Category.newCategory("Kids", "Categoria para crianças.", true);
+        Thread.sleep(1);
+        final var series = Category.newCategory("Series", null, true);
+        Thread.sleep(1);
+
+        Stream.of(filmes, netflix, amazon, documentarios, sports, kids, series)
                 .map(CategoryJpaEntity::from)
                 .forEach(categoryRepository::saveAndFlush);
     }

@@ -3,6 +3,7 @@ package com.fullcycle.admin.catalogo.domain.genre;
 import com.fullcycle.admin.catalogo.domain.AggregateRoot;
 import com.fullcycle.admin.catalogo.domain.category.CategoryID;
 import com.fullcycle.admin.catalogo.domain.exceptions.NotificationException;
+import com.fullcycle.admin.catalogo.domain.utils.InstantUtils;
 import com.fullcycle.admin.catalogo.domain.validation.ValidationHandler;
 import com.fullcycle.admin.catalogo.domain.validation.handler.Notification;
 
@@ -37,17 +38,21 @@ public class Genre extends AggregateRoot<GenreID> {
         this.updatedAt = anUpdatedAt;
         this.deletedAt = aDeletedAt;
 
+        selfValidate();
+    }
+
+    private void selfValidate() {
         final var notification = Notification.create();
         validate(notification);
 
-        if(notification.hasErrors()) {
+        if (notification.hasErrors()) {
             throw new NotificationException("Failed to validate an Aggregate Genre", notification);
         }
     }
 
     public static Genre newGenre(final String aName, final boolean isActive) {
         final var anId = GenreID.unique();
-        final var now = Instant.now();
+        final var now = InstantUtils.now();
         final var deletedAt = isActive ? null : now;
 
         return new Genre(
@@ -96,6 +101,44 @@ public class Genre extends AggregateRoot<GenreID> {
     @Override
     public void validate(final ValidationHandler handler) {
         new GenreValidator(this, handler).validate();
+    }
+
+    public Genre activate() {
+        this.deletedAt = null;
+        this.updatedAt = InstantUtils.now();
+        this.active = true;
+        return this;
+    }
+
+    public Genre deactivate() {
+        final var now = InstantUtils.now();
+
+        if (getDeletedAt() == null)
+            this.deletedAt = now;
+
+        this.updatedAt = now;
+        this.active = false;
+        return this;
+    }
+
+    public Genre update(
+            final String aName,
+            final boolean isActive,
+            final List<CategoryID> categories
+    ) {
+        if (isActive) {
+            activate();
+        } else {
+            deactivate();
+        }
+
+        this.name = aName;
+        this.categories = new ArrayList<>(categories);
+        this.updatedAt = InstantUtils.now();
+
+        selfValidate();
+
+        return this;
     }
 
     public String getName() {

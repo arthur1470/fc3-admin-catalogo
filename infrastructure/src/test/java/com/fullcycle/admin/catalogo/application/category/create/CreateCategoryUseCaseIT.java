@@ -122,7 +122,7 @@ class CreateCategoryUseCaseIT {
         );
 
         Mockito.doThrow(new IllegalStateException(expectedErrorMessage))
-                .when(categoryGateway.create(any()));
+                .when(categoryGateway).create(any());
 
         final var notification = useCase.execute(aCommand).getLeft();
 
