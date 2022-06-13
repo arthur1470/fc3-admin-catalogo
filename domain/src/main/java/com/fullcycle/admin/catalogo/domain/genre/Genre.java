@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static java.util.Collections.emptyList;
+
 public class Genre extends AggregateRoot<GenreID> {
 
     private String name;
@@ -133,7 +135,7 @@ public class Genre extends AggregateRoot<GenreID> {
         }
 
         this.name = aName;
-        this.categories = new ArrayList<>(categories);
+        this.categories = new ArrayList<>(categories != null ? categories : emptyList());
         this.updatedAt = InstantUtils.now();
 
         selfValidate();
