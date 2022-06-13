@@ -356,7 +356,7 @@ class GenreTest {
         final var moviesId = CategoryID.from("456");
         final var expectedName = "Ação";
         final var expectedIsActive = true;
-        final var expectedCategories = List.of(moviesId, seriesId)
+        final var expectedCategories = List.of(moviesId, seriesId);
 
         final var actualGenre = Genre.newGenre("AcAo", false);
         actualGenre.update(expectedName, expectedIsActive, expectedCategories);
