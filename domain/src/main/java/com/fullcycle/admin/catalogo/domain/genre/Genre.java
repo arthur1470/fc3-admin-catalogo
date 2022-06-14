@@ -1,6 +1,7 @@
 package com.fullcycle.admin.catalogo.domain.genre;
 
 import com.fullcycle.admin.catalogo.domain.AggregateRoot;
+import com.fullcycle.admin.catalogo.domain.category.Category;
 import com.fullcycle.admin.catalogo.domain.category.CategoryID;
 import com.fullcycle.admin.catalogo.domain.exceptions.NotificationException;
 import com.fullcycle.admin.catalogo.domain.utils.InstantUtils;
@@ -50,6 +51,22 @@ public class Genre extends AggregateRoot<GenreID> {
         if (notification.hasErrors()) {
             throw new NotificationException("Failed to validate an Aggregate Genre", notification);
         }
+    }
+
+    public Genre addCategory(final CategoryID aCategoryID) {
+        if (aCategoryID == null) return this;
+
+        this.categories.add(aCategoryID);
+        this.updatedAt = InstantUtils.now();
+        return this;
+    }
+
+    public Genre removeCategory(final CategoryID aCategoryID) {
+        if (aCategoryID == null) return this;
+
+        this.categories.remove(aCategoryID);
+        this.updatedAt = InstantUtils.now();
+        return this;
     }
 
     public static Genre newGenre(final String aName, final boolean isActive) {
