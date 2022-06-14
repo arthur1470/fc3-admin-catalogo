@@ -4,6 +4,7 @@ import com.fullcycle.admin.catalogo.domain.category.CategoryGateway;
 import com.fullcycle.admin.catalogo.domain.category.CategoryID;
 import com.fullcycle.admin.catalogo.domain.genre.GenreGateway;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -29,7 +30,8 @@ class CreateGenreUseCaseTest {
     @Mock
     private GenreGateway genreGateway;
 
-    public void givenAValidCommand_whenCallsCreateGenre_shouldReturnGenreId() {
+    @Test
+    void givenAValidCommand_whenCallsCreateGenre_shouldReturnGenreId() {
         //given
         final var expectedName = "Acao";
         final var expectedIsActive = true;
