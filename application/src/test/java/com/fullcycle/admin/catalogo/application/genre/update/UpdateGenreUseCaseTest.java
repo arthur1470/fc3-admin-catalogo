@@ -49,7 +49,7 @@ class UpdateGenreUseCaseTest {
                 expectedId.getValue(),
                 expectedName,
                 expectedIsActive,
-                expectedCategories
+                asString(expectedCategories)
         );
 
         Mockito.when(genreGateway.findById(any()))
@@ -78,5 +78,11 @@ class UpdateGenreUseCaseTest {
                 && aGenre.getUpdatedAt().isBefore(aUpdatedGenre.getUpdatedAt())
                 && Objects.isNull(aUpdatedGenre.getDeletedAt())
         ));
+    }
+
+    private List<String> asString(final List<CategoryID> categories) {
+        return categories.stream()
+                .map(CategoryID::getValue)
+                .toList();
     }
 }
