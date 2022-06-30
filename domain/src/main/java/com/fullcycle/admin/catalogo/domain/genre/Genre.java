@@ -1,7 +1,6 @@
 package com.fullcycle.admin.catalogo.domain.genre;
 
 import com.fullcycle.admin.catalogo.domain.AggregateRoot;
-import com.fullcycle.admin.catalogo.domain.category.Category;
 import com.fullcycle.admin.catalogo.domain.category.CategoryID;
 import com.fullcycle.admin.catalogo.domain.exceptions.NotificationException;
 import com.fullcycle.admin.catalogo.domain.utils.InstantUtils;
@@ -58,6 +57,15 @@ public class Genre extends AggregateRoot<GenreID> {
 
         this.categories.add(aCategoryID);
         this.updatedAt = InstantUtils.now();
+        return this;
+    }
+
+    public Genre addCategories(final List<CategoryID> categories) {
+        if (categories == null || categories.isEmpty()) return this;
+
+        this.categories.addAll(categories);
+        this.updatedAt = InstantUtils.now();
+
         return this;
     }
 

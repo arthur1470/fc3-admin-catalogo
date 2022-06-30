@@ -38,6 +38,8 @@ public class DefaultCreateGenreUseCase extends CreateGenreUseCase {
             throw new NotificationException("Could not create Aggregate Genre", notification);
         }
 
+        aGenre.addCategories(categories);
+
         return CreateGenreOutput.from(this.genreGateway.create(aGenre));
     }
 
