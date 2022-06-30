@@ -1,12 +1,11 @@
 package com.fullcycle.admin.catalogo.application.category.update;
 
+import com.fullcycle.admin.catalogo.application.UseCaseTest;
 import com.fullcycle.admin.catalogo.domain.category.Category;
 import com.fullcycle.admin.catalogo.domain.category.CategoryGateway;
 import com.fullcycle.admin.catalogo.domain.category.CategoryID;
-import com.fullcycle.admin.catalogo.domain.exceptions.DomainException;
 import com.fullcycle.admin.catalogo.domain.exceptions.NotFoundException;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -14,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -24,7 +24,7 @@ import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
-class UpdateCategoryUseCaseTest {
+class UpdateCategoryUseCaseTest extends UseCaseTest {
 
     @InjectMocks
     private DefaultUpdateCategoryUseCase useCase;
@@ -32,10 +32,9 @@ class UpdateCategoryUseCaseTest {
     @Mock
     private CategoryGateway categoryGateway;
 
-    @BeforeEach
-    void cleanUp() {
-        Mockito.clearAllCaches();
-        Mockito.reset(categoryGateway);
+    @Override
+    protected List<Object> getMocks() {
+        return List.of(categoryGateway);
     }
 
     @Test
@@ -70,12 +69,12 @@ class UpdateCategoryUseCaseTest {
         Mockito.verify(categoryGateway, times(1)).findById(expectedId);
         Mockito.verify(categoryGateway, times(1)).update(argThat(aUpdatedCategory ->
                 Objects.equals(expectedName, aUpdatedCategory.getName())
-                        && Objects.equals(expectedDescription, aUpdatedCategory.getDescription())
-                        && Objects.equals(expectedIsActive, aUpdatedCategory.isActive())
-                        && Objects.equals(expectedId, aUpdatedCategory.getId())
-                        && Objects.equals(aCategory.getCreatedAt(), aUpdatedCategory.getCreatedAt())
-                        && aCategory.getUpdatedAt().isBefore(aUpdatedCategory.getUpdatedAt())
-                        && Objects.isNull(aUpdatedCategory.getDeletedAt())
+                && Objects.equals(expectedDescription, aUpdatedCategory.getDescription())
+                && Objects.equals(expectedIsActive, aUpdatedCategory.isActive())
+                && Objects.equals(expectedId, aUpdatedCategory.getId())
+                && Objects.equals(aCategory.getCreatedAt(), aUpdatedCategory.getCreatedAt())
+                && aCategory.getUpdatedAt().isBefore(aUpdatedCategory.getUpdatedAt())
+                && Objects.isNull(aUpdatedCategory.getDeletedAt())
         ));
     }
 
@@ -145,12 +144,12 @@ class UpdateCategoryUseCaseTest {
         Mockito.verify(categoryGateway, times(1)).findById(expectedId);
         Mockito.verify(categoryGateway, times(1)).update(argThat(aUpdatedCategory ->
                 Objects.equals(expectedName, aUpdatedCategory.getName())
-                        && Objects.equals(expectedDescription, aUpdatedCategory.getDescription())
-                        && Objects.equals(expectedIsActive, aUpdatedCategory.isActive())
-                        && Objects.equals(expectedId, aUpdatedCategory.getId())
-                        && Objects.equals(aCategory.getCreatedAt(), aUpdatedCategory.getCreatedAt())
-                        && aCategory.getUpdatedAt().isBefore(aUpdatedCategory.getUpdatedAt())
-                        && Objects.nonNull(aUpdatedCategory.getDeletedAt())
+                && Objects.equals(expectedDescription, aUpdatedCategory.getDescription())
+                && Objects.equals(expectedIsActive, aUpdatedCategory.isActive())
+                && Objects.equals(expectedId, aUpdatedCategory.getId())
+                && Objects.equals(aCategory.getCreatedAt(), aUpdatedCategory.getCreatedAt())
+                && aCategory.getUpdatedAt().isBefore(aUpdatedCategory.getUpdatedAt())
+                && Objects.nonNull(aUpdatedCategory.getDeletedAt())
         ));
     }
 
@@ -188,12 +187,12 @@ class UpdateCategoryUseCaseTest {
         Mockito.verify(categoryGateway, times(1)).findById(expectedId);
         Mockito.verify(categoryGateway, times(1)).update(argThat(aUpdatedCategory ->
                 Objects.equals(expectedName, aUpdatedCategory.getName())
-                        && Objects.equals(expectedDescription, aUpdatedCategory.getDescription())
-                        && Objects.equals(expectedIsActive, aUpdatedCategory.isActive())
-                        && Objects.equals(expectedId, aUpdatedCategory.getId())
-                        && Objects.equals(aCategory.getCreatedAt(), aUpdatedCategory.getCreatedAt())
-                        && aCategory.getUpdatedAt().isBefore(aUpdatedCategory.getUpdatedAt())
-                        && Objects.isNull(aUpdatedCategory.getDeletedAt())
+                && Objects.equals(expectedDescription, aUpdatedCategory.getDescription())
+                && Objects.equals(expectedIsActive, aUpdatedCategory.isActive())
+                && Objects.equals(expectedId, aUpdatedCategory.getId())
+                && Objects.equals(aCategory.getCreatedAt(), aUpdatedCategory.getCreatedAt())
+                && aCategory.getUpdatedAt().isBefore(aUpdatedCategory.getUpdatedAt())
+                && Objects.isNull(aUpdatedCategory.getDeletedAt())
         ));
     }
 

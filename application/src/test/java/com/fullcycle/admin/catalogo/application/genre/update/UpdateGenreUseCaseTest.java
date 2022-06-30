@@ -1,5 +1,6 @@
 package com.fullcycle.admin.catalogo.application.genre.update;
 
+import com.fullcycle.admin.catalogo.application.UseCaseTest;
 import com.fullcycle.admin.catalogo.domain.category.CategoryGateway;
 import com.fullcycle.admin.catalogo.domain.category.CategoryID;
 import com.fullcycle.admin.catalogo.domain.exceptions.NotificationException;
@@ -23,7 +24,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
-class UpdateGenreUseCaseTest {
+class UpdateGenreUseCaseTest extends UseCaseTest {
 
     @InjectMocks
     private DefaultUpdateGenreUseCase useCase;
@@ -33,6 +34,11 @@ class UpdateGenreUseCaseTest {
 
     @Mock
     private GenreGateway genreGateway;
+
+    @Override
+    protected List<Object> getMocks() {
+        return List.of(categoryGateway, genreGateway);
+    }
 
     @Test
     void givenAValidCommand_whenCallsUpdateGenre_shouldReturnGenreId() {
@@ -232,4 +238,5 @@ class UpdateGenreUseCaseTest {
                 .map(CategoryID::getValue)
                 .toList();
     }
+
 }
