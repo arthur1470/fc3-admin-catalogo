@@ -15,10 +15,10 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 
-public class DeleteGenreUseCaseTest extends UseCaseTest {
+class DeleteGenreUseCaseTest extends UseCaseTest {
 
     @InjectMocks
-    private DefaultDeleteUseCase useCase;
+    private DefaultDeleteGenreUseCase useCase;
 
     @Mock
     private GenreGateway genreGateway;
